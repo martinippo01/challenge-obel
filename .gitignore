@@ -36,3 +36,12 @@ coverage/
 # OS
 Thumbs.db
 .DS_Store
+
+# Terraform (See terraform/.gitignore for detailed rules)
+# Do NOT commit terraform state files or .tfvars with sensitive data
+terraform/**/.terraform/
+terraform/**/*.tfstate
+terraform/**/*.tfstate.*
+terraform/**/terraform.tfvars
+terraform/**/.terraform.lock.hcl
+

@@ -203,6 +203,44 @@ docker-compose logs postgres
 docker-compose down
 ```
 
+### Production Deployment to Azure
+
+This project includes Infrastructure-as-Code using Terraform and automated CI/CD with GitHub Actions for deployment to Azure.
+
+**Quick Start:**
+```bash
+# 1. Configure and deploy infrastructure
+cd terraform
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your Azure region
+terraform init
+terraform apply
+
+# 2. Add 7 GitHub Secrets (see DEPLOYMENT.md for detailed instructions)
+#    - DOCKER_HUB_USERNAME, DOCKER_HUB_PASSWORD
+#    - SSH_HOST, SSH_USER, SSH_PRIVATE_KEY
+#    - DB_PASSWORD, CORS_ORIGIN
+
+# 3. Push to main branch - GitHub Actions will automatically deploy!
+git push origin main
+```
+
+**Features:**
+- ✅ Azure VM with Docker & Docker Compose
+- ✅ Docker Hub for image storage (free tier included, Docker login automatic)
+- ✅ Terraform for Infrastructure-as-Code
+- ✅ GitHub Actions for automated CI/CD
+- ✅ Terraform state stored in Azure Storage (optional)
+- ✅ SSH deployment with security groups
+- ✅ Cost-effective setup (~$37-40/month)
+
+**See [DEPLOYMENT.md](./DEPLOYMENT.md) for:**
+- Complete step-by-step setup guide
+- Docker Hub account & credentials setup
+- GitHub Secrets configuration
+- Troubleshooting guide
+- Monitoring instructions
+
 ### Testing
 
 ```bash
