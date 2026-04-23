@@ -102,6 +102,107 @@ npm run start:prod
 npm run start:debug
 ```
 
+### Docker Setup
+
+The application is fully dockerized and can be run using Docker and Docker Compose.
+
+#### Prerequisites
+- Docker
+- Docker Compose
+
+#### Running with Docker Compose
+
+The easiest way to run the entire application stack:
+
+```bash
+# Start all services (PostgreSQL + NestJS app)
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop all services
+docker-compose down
+
+# Remove volumes (clean database)
+docker-compose down -v
+```
+
+#### Environment Configuration for Docker
+
+When using Docker, update your `.env` file:
+
+```env
+# Database Configuration
+DB_HOST=postgres        # Service name from docker-compose
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=nestjs_clean_arch
+
+# Server Configuration
+PORT=3000
+CORS_ORIGIN=http://localhost:3000
+```
+
+#### Building Docker Image
+
+Build the Docker image manually:
+
+```bash
+docker build -t nestjs-clean-arch:latest .
+```
+
+#### Running Docker Container Standalone
+
+```bash
+# Run the container with PostgreSQL link
+docker run -d \
+  --name nestjs_app \
+  --network nestjs_network \
+  -e DB_HOST=postgres \
+  -e DB_PORT=5432 \
+  -e DB_USERNAME=postgres \
+  -e DB_PASSWORD=postgres \
+  -e DB_NAME=nestjs_clean_arch \
+  -p 3000:3000 \
+  nestjs-clean-arch:latest
+```
+
+#### Docker Health Checks
+
+Both PostgreSQL and the NestJS application have health checks configured:
+
+```bash
+# Check service health
+docker-compose ps
+
+# View health status
+docker ps --format "table {{.Names}}\t{{.Status}}"
+```
+
+#### Troubleshooting Docker
+
+**App container won't start:**
+```bash
+# View container logs
+docker-compose logs nestjs
+
+# Check if postgres is running
+docker-compose logs postgres
+```
+
+**Database connection error:**
+- Ensure `DB_HOST=postgres` in `.env` (not `localhost`)
+- Check PostgreSQL is healthy: `docker-compose ps`
+- Verify environment variables are set correctly
+
+**Port already in use:**
+```bash
+# Change port in docker-compose.yml or use different port
+docker-compose down
+```
+
 ### Testing
 
 ```bash
