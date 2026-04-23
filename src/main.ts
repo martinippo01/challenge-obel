@@ -14,9 +14,12 @@ async function bootstrap() {
   // Enable validation globally
   app.useGlobalPipes(new ValidationPipe());
 
-  // Enable CORS with restricted origins
+  // Enable CORS - for this proof-of-concept allow all origins so the API
+  // is directly accessible from Postman or any client. Using `origin: true`
+  // reflects the request origin, which works with `credentials: true` if
+  // needed. In production you should restrict this to trusted origins.
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: true,
     credentials: true,
   });
 
