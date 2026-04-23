@@ -38,58 +38,6 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:latest
             ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          # No cache to ensure compatibility with GitHub runner
-#      - name: Deploy to VM
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          username: ${{ secrets.SSH_USER }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          script: |
-#            cd /home/${{ secrets.SSH_USER }}/app
-#
-#            # Update .env file with secrets
-#            cat > .env << 'EOF'
-#            NODE_ENV=production
-#            DB_HOST=postgres
-#            DB_PORT=5432
-#            DB_USERNAME=postgres
-#            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-#            DB_NAME=nestjs_clean_arch
-#            PORT=3000
-#            CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
-#            EOF
-#
-#            # Create docker-compose override file for production (uses Docker Hub image instead of building)
-#            cat > docker-compose.override.yml << EOF
-#            version: '3.8'
-#            services:
-#              nestjs:
-#                image: ${{ env.IMAGE_NAME }}:latest
-#                build: null
-#            EOF
-#
-#            # Login to Docker Hub
-#            echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-#
-#            # Pull latest image
-#            docker pull ${{ env.IMAGE_NAME }}:latest
-#
-#            # Restart services with override
-#            docker-compose down
-#            docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
-#
-#            # Wait for healthcheck
-#            sleep 10
-#
-#            # Verify deployment
-#            if curl -f http://localhost:3000/api > /dev/null 2>&1; then
-#              echo "Deployment successful!"
-#            else
-#              echo "Deployment verification failed"
-#              docker-compose logs nestjs
-#              exit 1
-#            fi
 
       - name: Check workflow status
         if: always()
