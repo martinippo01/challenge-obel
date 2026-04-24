@@ -3,6 +3,13 @@
 This project is a REST API built with NestJS and TypeScript, designed around Clean Architecture.
 It provides user, role, and permission management with PostgreSQL persistence and Docker-based deployment.
 
+## Live demo
+
+This project is running and available at obel.martinippolito.com.ar. Access swagger documentation at /docs.
+For authentication use the following auhtentication headers:
+- Bearer dev-admin-token
+- Bearer dev-read-token
+
 ## Project Overview
 
 - **What it is:** A backend service for user and role administration.
