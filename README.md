@@ -70,6 +70,7 @@ npm run migration:run
 
 ## Documentation
 
+- `documentation/AUTHENTICATION.md`: brief overview of the token-based auth and permission checks.
 - `documentation/CLEAN_ARCHITECTURE.md`: layer responsibilities, dependency rules, and boundary checks.
 - `documentation/TECH_STACK.md`: technologies used and deployment stack.
 - `documentation/DATA_MODELING.md`: entity model, relationships, and constraints.
