@@ -243,7 +243,7 @@ git push origin main
 - ✅ SSH deployment with security groups
 - ✅ Cost-effective setup (~$37-40/month)
 
-**See [DEPLOYMENT.md](./DEPLOYMENT.md) for:**
+**See [DEPLOYMENT.md](documentation/DEPLOYMENT.md) for:**
 - Complete step-by-step setup guide
 - Docker Hub account & credentials setup
 - GitHub Secrets configuration

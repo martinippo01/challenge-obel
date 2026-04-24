@@ -11,8 +11,8 @@ import {
 import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import request from 'supertest';
-import { Permissions } from './permissions.decorator';
-import { PermissionsGuard } from './permissions.guard';
+import { Permissions } from '@shared/auth/permissions.decorator';
+import { PermissionsGuard } from '@shared/auth/permissions.guard';
 import { AuthMiddleware } from '@shared/middleware/auth.middleware';
 
 @Controller('api/test-auth')
