@@ -128,6 +128,15 @@ docker-compose down
 docker-compose down -v
 ```
 
+For VM deployment (or any host that should pull from Docker Hub instead of building locally), use the secondary compose file:
+
+```bash
+docker-compose -f docker-compose.vm.yml pull
+docker-compose -f docker-compose.vm.yml up -d
+```
+
+`docker-compose.vm.yml` expects `IMAGE_NAME` and `IMAGE_TAG` in `.env` (defaults to `your-dockerhub-username/nestjs-app:latest`).
+
 #### Environment Configuration for Docker
 
 When using Docker, update your `.env` file:
@@ -269,6 +278,70 @@ GET    /api/users              # List all users
 GET    /api/users/:id          # Get user by ID
 PUT    /api/users/:id          # Update user
 DELETE /api/users/:id          # Delete user
+
+POST   /api/roles              # Create a role (requires role.write)
+PUT    /api/roles/:id          # Edit a role (requires role.write)
+GET    /api/roles              # List roles
+GET    /api/roles/:id          # Get role by id
+POST   /api/users/:userId/roles/:roleId    # Assign role to user (requires role.assign)
+DELETE /api/users/:userId/roles/:roleId    # Delete role assignment from user (requires role.assign)
+GET    /api/users/:userId/roles            # List roles of a user
+```
+
+### OpenAPI / Swagger
+
+- Swagger UI is available at `/docs`
+- Auth is configured as `Bearer` token in the UI
+
+### Authenticated API Call Examples
+
+Use tokens from your `.env` (`AUTH_TOKEN` for admin actions, `AUTH_READ_TOKEN` for read-only):
+
+```bash
+export AUTH_TOKEN=dev-admin-token
+export AUTH_READ_TOKEN=dev-read-token
+```
+
+Create a role (allowed with `AUTH_TOKEN`, expects `201`):
+
+```bash
+curl -i -X POST http://localhost:3000/api/roles \
+  -H "Authorization: Bearer ${AUTH_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "manager",
+    "description": "Manager role",
+    "permissionSymbols": ["role.read", "role.assign"]
+  }'
+```
+
+List roles (allowed with `AUTH_READ_TOKEN`, expects `200`):
+
+```bash
+curl -i http://localhost:3000/api/roles \
+  -H "Authorization: Bearer ${AUTH_READ_TOKEN}"
+```
+
+Assign role to user (allowed with `AUTH_TOKEN`, expects `204`):
+
+```bash
+curl -i -X POST \
+  "http://localhost:3000/api/users/550e8400-e29b-41d4-a716-446655440001/roles/<ROLE_ID>" \
+  -H "Authorization: Bearer ${AUTH_TOKEN}"
+```
+
+Forbidden example: assign role with read-only token (expects `403`):
+
+```bash
+curl -i -X POST \
+  "http://localhost:3000/api/users/550e8400-e29b-41d4-a716-446655440001/roles/<ROLE_ID>" \
+  -H "Authorization: Bearer ${AUTH_READ_TOKEN}"
+```
+
+Unauthorized example: missing token (expects `401`):
+
+```bash
+curl -i http://localhost:3000/api/roles
 ```
 
 ### Create User Example
@@ -314,7 +387,16 @@ PORT=3000
 
 # CORS
 CORS_ORIGIN=http://localhost:3000
+
+# Authentication
+AUTH_TOKEN=dev-admin-token
+AUTH_READ_TOKEN=dev-read-token
 ```
+
+### Authorization Model
+
+- `AUTH_TOKEN`: full role management permissions (`role.read`, `role.write`, `role.assign`)
+- `AUTH_READ_TOKEN`: read-only access (`role.read`)
 
 ## Adding New Features
 

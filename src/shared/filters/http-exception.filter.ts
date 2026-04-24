@@ -6,6 +6,7 @@ import {
   ArgumentsHost,
   HttpStatus,
   Logger,
+  HttpException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { DomainException } from '../exceptions/domain.exception';
@@ -31,6 +32,25 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode = HttpStatus.NOT_FOUND;
       message = exception.message;
       code = exception.code;
+    } else if (exception instanceof HttpException) {
+      statusCode = exception.getStatus();
+      const response = exception.getResponse() as
+        | string
+        | { message?: string | string[]; error?: string };
+
+      if (typeof response === 'string') {
+        message = response;
+      } else if (Array.isArray(response?.message)) {
+        message = response.message.join(', ');
+      } else if (response?.message) {
+        message = response.message;
+      } else {
+        message = exception.message;
+      }
+
+      code = response && typeof response !== 'string' && response.error
+        ? response.error.toUpperCase().replace(/\s+/g, '_')
+        : 'HTTP_EXCEPTION';
     } else if (exception instanceof ConflictException) {
       statusCode = HttpStatus.CONFLICT;
       message = exception.message;
